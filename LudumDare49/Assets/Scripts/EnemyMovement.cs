@@ -7,8 +7,8 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float playerSpeed;
-    [SerializeField] private float startSpeed;
     [SerializeField] private float resetMagnitude;
+    [SerializeField] private float damage;
     [SerializeField] private float spawnDelayTime;
     [SerializeField] private Color col;
     private Vector3 direction;
@@ -50,14 +50,13 @@ public class EnemyMovement : MonoBehaviour
     {
         direction = direction.normalized;
         //Debug.Log(direction);
-        rigid.AddForce(startSpeed * direction);
+        rigid.AddForce(speed * direction);
     }
     private void ShootRandomised()
     {      
-        direction = new Vector3(Random.Range(-10, 10), 0.0f, Random.Range(-10, 10));
-        direction = direction.normalized;
+        setDirection(new Vector3(Random.Range(-10, 10), 0.0f, Random.Range(-10, 10)).normalized);
         //Debug.Log(direction);
-        rigid.AddForce(speed * direction);
+        Shoot();
     }
 
     private void ShootDirected(Collider target)
@@ -77,6 +76,10 @@ public class EnemyMovement : MonoBehaviour
             var direction = Vector3.Reflect(lastVelocity.normalized, collision.contacts[0].normal);
 
             rigid.velocity = direction * Mathf.Max(speed, 0f);
+        }
+        else if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerMovement>().takeDamage(damage);
         }
 
     }
@@ -98,13 +101,16 @@ public class EnemyMovement : MonoBehaviour
             ShootDirected(other);
         }
         
-
     }
 
     private IEnumerator spawnDelay()
     {
+        rigid.useGravity = false;
+        GetComponent<Collider>().enabled = false;
         yield return new WaitForSeconds(spawnDelayTime);
-        
+
+        rigid.useGravity = true;
+        GetComponent<Collider>().enabled = true;
         Shoot();
         yield return new WaitForSeconds(2.0f);
         shootPermission = true;

@@ -127,10 +127,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2800
   playerSpeed: 5000
-  startSpeed: 5000
   resetMagnitude: 1.2
+  damage: 2
   spawnDelayTime: 2
-  col: {r: 0, g: 0, b: 0, a: 0}
+  col: {r: 0.909804, g: 0.15294118, b: 0.15294118, a: 0}
   textObj: {fileID: 6112092639652311562, guid: 98e3630f7c162ce469dab82055a9410e, type: 3}
-  pointValue: 5
+  pointValue: 3
   lastVelocity: {x: 0, y: 0, z: 0}

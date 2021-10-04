@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
+    [SerializeField] float maxHealth;
 
     private Vector3 moveDirection;
     private Vector3 velocity;
@@ -23,18 +25,21 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 lookDirection;
 
-    [SerializeField] float health;
+    float health;
     
+
 
     //Refecrences
     private CharacterController controller;
     private Animator anim;
+    [SerializeField] private Image healthBar;
 
 
 
     // Start is called before the first frame update
     private void Start()
     {
+        health = maxHealth;
         sphereAttack.enabled = false;
         controller = GetComponent<CharacterController>();
         anim = GetComponentInChildren<Animator>();
@@ -43,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        healthBar.GetComponent<HealthBarHandler>().SetHealthBarValue(health / maxHealth);
         if(health <= 0)
         {
             Destroy(gameObject);
@@ -151,13 +157,9 @@ public class PlayerMovement : MonoBehaviour
         anim.SetLayerWeight(anim.GetLayerIndex("Attack Layer"), 0);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void takeDamage(float damageAmount)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            health -= 1;
-            Debug.Log("health: " + health);
-        }
+        health -= damageAmount;
     }
 
 }

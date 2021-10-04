@@ -20,7 +20,10 @@ public class SpawnerScript : MonoBehaviour
 
     public void spawnBall(int ballNr)
     {
+        // set direction for Ball
         direction = transform.parent.gameObject.transform.position - transform.position;
+        //randomise a little rotation
+        direction = Quaternion.AngleAxis(Random.Range(-30, 30), Vector3.up) * direction;
         GameObject tempBall = Instantiate(balls[ballNr-1], transform.position + new Vector3(0, balls[ballNr-1].transform.localScale.y, 0) / 2, transform.rotation);
         tempBall.GetComponent<EnemyMovement>().setDirection(direction);
     }
