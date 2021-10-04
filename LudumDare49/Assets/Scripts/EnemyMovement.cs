@@ -1,10 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyMovement : MonoBehaviour    
 {
     [SerializeField] private float speed;
+    [SerializeField] private float playerSpeed;
+    [SerializeField] private float startSpeed;
+    [SerializeField] private float resetMagnitude;
+    [SerializeField] private float spawnDelayTime;
+    [SerializeField] private Color col;
+    private Vector3 direction;
+    private GameObject textObject;
+    [SerializeField] Text textObj;
+
+    [SerializeField] private float pointValue;
+
+    private bool shootPermission = false;
+
     private Rigidbody rigid;
 
     [SerializeField] Vector3 lastVelocity;
@@ -13,33 +27,44 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        col.a = 255;
+        textObject = GameObject.FindWithTag("CounterText");
+        textObj = textObject.GetComponent<Text>();
         rigid = GetComponent<Rigidbody>();
-        Shoot();
+        StartCoroutine(spawnDelay());
+        
+ 
     }
 
     // Update is called once per frame
     void Update()
     {
         lastVelocity = rigid.velocity;
-        if (lastVelocity.magnitude < 3)
+        if (lastVelocity.magnitude < resetMagnitude && shootPermission)
         {
-            Shoot();
+            ShootRandomised();
         }
     }
 
     private void Shoot()
-    {      
-        Vector3 direction = new Vector3(Random.Range(-10, 10), 0.0f, Random.Range(-10, 10));
+    {
         direction = direction.normalized;
-        Debug.Log(direction);
+        //Debug.Log(direction);
+        rigid.AddForce(startSpeed * direction);
+    }
+    private void ShootRandomised()
+    {      
+        direction = new Vector3(Random.Range(-10, 10), 0.0f, Random.Range(-10, 10));
+        direction = direction.normalized;
+        //Debug.Log(direction);
         rigid.AddForce(speed * direction);
     }
 
     private void ShootDirected(Collider target)
     {
-        Vector3 direction = gameObject.transform.position - target.transform.position;
+        direction = (gameObject.transform.position - target.transform.position).normalized;
         
-        rigid.AddForce(speed * direction);
+        rigid.AddForce(playerSpeed * direction);
 
     }
 
@@ -60,7 +85,13 @@ public class EnemyMovement : MonoBehaviour
     {
         if(other.gameObject.CompareTag("Destructor"))
         {
+            //other.gameObject.GetComponent<DestructorScript>().increasePoints(pointValue);
+            textObj.text = (float.Parse(textObj.text) + pointValue).ToString();
+
+            textObj.color = col;
             Destroy(gameObject);
+
+
         }
         else if(other.gameObject.CompareTag("Attack"))
         {
@@ -69,4 +100,19 @@ public class EnemyMovement : MonoBehaviour
         
 
     }
+
+    private IEnumerator spawnDelay()
+    {
+        yield return new WaitForSeconds(spawnDelayTime);
+        
+        Shoot();
+        yield return new WaitForSeconds(2.0f);
+        shootPermission = true;
+    }
+
+    public void setDirection(Vector3 newDirection)
+    {
+        direction = newDirection;
+    }
+
 }

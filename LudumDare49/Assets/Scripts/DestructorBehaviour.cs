@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DestructorBehaviour : MonoBehaviour
 {
+    private float overallpoints;
+    private float previousPoints;
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,14 +18,16 @@ public class DestructorBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //TODO update points in UI
+
+        
         
     }
-    private void OnCollisionEnter(Collision collision)
+
+    public void increasePoints(float addedPoints)
     {
-
-        // collide with destructor, get destroyed
-        Destroy(collision.collider.gameObject);
-        
+        overallpoints += addedPoints;
     }
 
+    
 }

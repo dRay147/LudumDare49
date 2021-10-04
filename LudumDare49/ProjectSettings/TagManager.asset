@@ -8,6 +8,7 @@ TagManager:
   - Destructor
   - Wall
   - Attack
+  - CounterText
   layers:
   - Default
   - TransparentFX
