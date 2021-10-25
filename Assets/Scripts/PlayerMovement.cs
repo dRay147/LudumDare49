@@ -11,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] float maxHealth;
-    [SerializeField] Scene scene;
 
     private Vector3 moveDirection;
     private Vector3 velocity;
@@ -178,8 +177,8 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
 
         SceneManager.LoadScene("MyScene");
-        Destroy(gameObject);
-
+        //Destroy(gameObject);
+        SceneManager.UnloadSceneAsync("MyScene");
     }
 
 }
